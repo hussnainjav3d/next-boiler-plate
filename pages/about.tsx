@@ -1,7 +1,5 @@
-export default function About() {
-  return (
-    <div>
-      <h1>About Page</h1>
-    </div>
-  )
+import { About } from '../components/about'
+
+export const AboutPage = () => {
+  return <About />
 }
