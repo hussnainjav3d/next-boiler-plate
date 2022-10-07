@@ -1,5 +1,6 @@
-import { About } from '../components/about'
+import { PageNotFound } from '../components/404'
 
-export const AboutPage = () => {
-  return <About />
+const AboutPage = () => {
+  return <PageNotFound />
 }
+export default AboutPage

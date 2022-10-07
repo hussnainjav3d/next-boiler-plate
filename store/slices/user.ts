@@ -1,16 +1,14 @@
-import { createSlice, Draft, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, Draft, PayloadAction } from "@reduxjs/toolkit";
 
 export interface UserState {
-  email: string;
-  name: string;
+  nonceId: string;
 }
 
 /**
  * Default state object with initial values.
  */
 const initialState: UserState = {
-  name: 'user',
-  email: 'user@gmail.com',
+  nonceId: ``,
 } as const;
 
 /**
@@ -20,20 +18,14 @@ const initialState: UserState = {
  * changed based on your needs.
  */
 export const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState,
   reducers: {
-    setName: (
+    setAuthCode: (
       state: Draft<typeof initialState>,
-      action: PayloadAction<typeof initialState.name>
+      action: PayloadAction<typeof initialState.nonceId>
     ) => {
-      state.name = action.payload;
-    },
-    setEmail: (
-      state: Draft<typeof initialState>,
-      action: PayloadAction<typeof initialState.email>
-    ) => {
-      state.email = action.payload;
+      state.nonceId = action.payload;
     },
   },
 });
@@ -42,6 +34,6 @@ export const userSlice = createSlice({
 export const getUserState = (state: { user: UserState }) => state.user;
 
 // Exports all actions
-export const { setName, setEmail } = userSlice.actions;
+export const { setAuthCode } = userSlice.actions;
 
 export default userSlice.reducer;
