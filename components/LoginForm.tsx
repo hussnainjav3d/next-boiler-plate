@@ -1,47 +1,50 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/future/image";
 import brandLogo from "../public/brandLogo.svg";
 import { PasswordInput } from "./Common/InputField";
 import { BACK_END_API } from "../config";
 import { useSelector } from "../store/store";
-import Router from "next/router";
+import axios from "axios";
 
 export const LoginForm = () => {
   const [email, setEmail] = useState(``);
   const [password, setPassword] = useState(``);
+  const [redirectUri, setRedirectUri] = useState(``);
   const { nonceId } = useSelector(({ user }) => user);
-  const redirectUri = localStorage.getItem("redirectUri");
+  useEffect(() => {
+    setRedirectUri(localStorage.getItem("redirectUri") as string);
+  }, []);
+
   const handleLogin = () => {
-    fetch(`${BACK_END_API}/api/user/log-in`, {
-      method: `POST`,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    axios
+      .post(`${BACK_END_API}/api/user/log-in`, {
         email,
         password,
         nonceId: nonceId,
-      }),
-    })
-      .then((res) => res.json())
+      })
+      .then((res) => res?.data)
       .then((res) => {
+        console.log(`response`, res);
         if (res?.hasError) {
-          window.location.assign(`${redirectUri.split(`auth`)[0]}?error=""`);
-        } else {
-          console.log(`test535`, res);
-
           window.location.assign(
-            `${redirectUri.split(`auth`)[0]}?authCode=${
-              res.data.authCode
-            }&nonceId=${nonceId}`
+            `${redirectUri?.split(`auth`)[0]}?error="Login Failed"`
           );
-          console.log(`redirectUri`, redirectUri.split(`auth`)[0]);
+        } else {
+          res?.data?.authCode &&
+            window.location.assign(
+              `${redirectUri?.split(`auth`)[0]}auth/oidc-redirect?authCode=${
+                res?.data?.authCode
+              }&nonceId=${nonceId}`
+            );
+          document.cookie = `sessionExpiry=${res?.data?.sessionExpiry}`;
+          document.cookie = `sessionKey=${res?.data?.sessionKey}`;
         }
       })
       .catch((err) => {
-        if (err) {
-          window.location.assign(`${redirectUri.split(`auth`)[0]}?error=""`);
-        }
+        console.log(`loginFail`);
+        // if (err) {
+        //   window.location.assign(`${redirectUri?.split(`auth`)[0]}?error=""`);
+        // }
       });
     console.log({ email, password });
   };
