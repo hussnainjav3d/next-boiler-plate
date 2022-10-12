@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
-import Image from "next/future/image";
+// import Image from "next/future/image";
 import brandLogo from "../public/brandLogo.svg";
 import { PasswordInput } from "./Common/InputField";
 import { BACK_END_API } from "../config";
 import { useSelector } from "../store/store";
 import axios from "axios";
+import Image from "next/image";
 
 export const LoginForm = () => {
   const [email, setEmail] = useState(``);
   const [password, setPassword] = useState(``);
   const [redirectUri, setRedirectUri] = useState(``);
   const { nonceId } = useSelector(({ user }) => user);
+
   useEffect(() => {
     setRedirectUri(localStorage.getItem("redirectUri") as string);
   }, []);
@@ -46,7 +48,6 @@ export const LoginForm = () => {
         //   window.location.assign(`${redirectUri?.split(`auth`)[0]}?error=""`);
         // }
       });
-    console.log({ email, password });
   };
   return (
     <div className="w-2/3 mx-auto">
