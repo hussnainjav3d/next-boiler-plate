@@ -30,8 +30,3 @@ a {
     background: black;
   }
 }
-
-.height-100 {
-  height: 100vh !important;
-  background-color: aqua;
-}
